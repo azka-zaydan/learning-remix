@@ -1,13 +1,25 @@
 import { Link } from "@remix-run/react"
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node"
-
+import { db } from "~/utils/db.server";
+import type { ErrorProps } from "~/typings";
 export const action: ActionFunction = async ({ request }) => {
     const form = await request.formData()
+
+
     const title = form.get('title')
     const body = form.get('body')
-    const fields = { title, body }
-    return redirect('/posts')
+
+    if (body?.toString() === '' || title?.toString() === '') {
+        throw new Error('Please Enter Body and Title')
+    } else if (body && title) {
+        const fields = { title: title.toString(), body: body.toString() }
+        const post = await db.post.create({ data: fields })
+
+        return redirect(`/posts/${post.id}`)
+    }
+
+
 }
 
 function NewPost() {
@@ -37,6 +49,18 @@ function NewPost() {
     )
 }
 
+export const ErrorBoundary = ({ error }: ErrorProps) => {
+    console.log(error);
+    return (
+        <>
+            <h1>Error</h1>
+            <p>{error.message}</p>
+            <Link to={'/posts/new'} className='btn'>
+                try again
+            </Link>
+        </>
+    )
+}
 
 
 

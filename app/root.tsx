@@ -1,4 +1,4 @@
-import { Link, LiveReload, Outlet, Links, Meta } from '@remix-run/react'
+import { Link, LiveReload, Outlet, Links, Meta, useCatch, Scripts } from '@remix-run/react'
 import globalStyles from './styles/global.css'
 import type { DocumentProps, ErrorProps, LayoutProps } from './typings'
 
